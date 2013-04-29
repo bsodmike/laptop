@@ -1,7 +1,8 @@
 Laptop
 ======
 
-Laptop is a script to set up a Mac OS X laptop for Rails development.
+Laptop is a script to set up a Mac OS X laptop for development,
+primarily in Ruby, Python, and Node.
 
 Requirements
 ------------
@@ -23,17 +24,22 @@ Install
 
 Run the script:
 
-    zsh <(curl -s https://raw.github.com/thoughtbot/laptop/master/mac)
+    zsh <(curl -s https://raw.github.com/bsodmike/laptop/bsodmike/mac)
 
 What it sets up
 ---------------
 
+* Download my dotfiles (and other temp files) to ~/.boostrap_laptop.
+This folder can be deleted later on.
+* Set my Git config
+* Install OH MY ZSHELL! with my config
+* Enable Solarized Dark theme for Terminal
+* Install [Carlhuda's JANUS](https://github.com/carlhuda/janus) with [my
+personalisations](https://github.com/bsodmike/dotfiles/tree/master/vim)
+and [plugins](https://github.com/bsodmike/janus).
 * Bundler gem for managing Ruby libraries
 * Exuberant Ctags for indexing files for vim tab completion
 * Foreman gem for serving Rails apps locally
-* Heroku Config plugin for local `ENV` variables
-* Heroku Toolbelt for interacting with the Heroku API
-* Hub gem for interacting with the GitHub API
 * Homebrew for managing operating system libraries
 * ImageMagick for cropping and resizing images
 * Postgres for storing relational data
@@ -44,25 +50,22 @@ What it sets up
 * Redis for storing key-value data
 * Ruby Build for installing Rubies
 * Ruby stable for writing general-purpose code
-* SSH public key for authenticating with Github and Heroku
 * The Silver Searcher for finding things in files
 * Tmux for saving project state and switching between projects
 * Watch for periodically executing a program and displaying the output
+* Python (Framework), pip, virtualenv, virtualenvwrapper
+* Node and npm
 
 It should take less than 15 minutes to install (depends on your machine).
 
 Credits
 -------
 
-![thoughtbot](http://thoughtbot.com/assets/tm/logo.png)
-
-Laptop is maintained and funded by [thoughtbot, inc](http://thoughtbot.com/community).
-The names and logos for thoughtbot are trademarks of thoughtbot, inc.
-
-Thank you, [contributors](/thoughtbot/laptop/graphs/contributors)!
+This is a [fork of Laptop](https://github.com/bsodmike/laptop) by
+[thoughtbot, inc](http://thoughtbot.com), modified for my personalised
+development setup.
 
 License
 -------
 
-Laptop is © 2011-2013 thoughtbot, inc. It is free software, and may be
-redistributed under the terms specified in the LICENSE file.
+This project rocks and uses MIT-LICENSE.
