@@ -1,29 +1,42 @@
 #!/usr/bin/env zsh
+TEMP_PATH=~/.bootstrap_laptop
 
 successfully() {
   $* || (echo "failed" 1>&2 && exit 1)
 }
 
-echo "Checking for SSH key, generating one if it doesn't exist ..."
-  [[ -f ~/.ssh/id_rsa.pub ]] || ssh-keygen -t rsa
+echo "Setup temp area for downloads ..."
+  successfully mkdir $TEMP_PATH
 
-echo "Copying public key to clipboard. Paste it into your Github account ..."
-  [[ -f ~/.ssh/id_rsa.pub ]] && cat ~/.ssh/id_rsa.pub | pbcopy
-  successfully open https://github.com/account/ssh
+echo "Download dotfiles ..."
+  successfully git clone https://github.com/bsodmike/dotfiles.git $TEMP_PATH/dotfiles
+
+echo "Set Git Config ..."
+  successfully cp $TEMP_PATH/dotfiles/git/.gitconfig ~/
+
+echo "Installing OH MY ZSHELL! ..."
+  successfully curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh
+  successfully cp $TEMP_PATH/dotfiles/oh-my-zsh/.zshrc ~/
+  successfully cp $TEMP_PATH/dotfiles/oh-my-zsh/themes/bsodmike.zsh-theme ~/.oh-my-zsh/themes/bsodmike.zsh-theme
+
+echo "Set Solarized Theme for Terminal ..."
+  successfully curl https://raw.github.com/altercation/solarized/master/osx-terminal.app-colors-solarized/Solarized%20Dark%20ansi.terminal > $TEMP_PATH/solarized_dark_ansi.terminal
+  successfully open $TEMP_PATH/solarized_dark_ansi.terminal
+
+echo "Installing JANUS ..."
+  successfully curl -Lo- https://bit.ly/janus-bootstrap | zsh
+  successfully git clone https://github.com/bsodmike/janus.git ~/.janus
+  successfully cd ~/.janus && git submodule update --init
+  successfully cp $TEMP_PATH/dotfiles/vim/.vimrc.after ~/.vimrc.after
+  successfully cp $TEMP_PATH/dotfiles/vim/.vimrc.before ~/.vimrc.before
 
 echo "Fixing permissions ..."
   successfully sudo mkdir -p /usr/local
   successfully sudo chown -R `whoami` /usr/local
 
 echo "Installing Homebrew, a good OS X package manager ..."
-  successfully ruby <(curl -fsS https://raw.github.com/mxcl/homebrew/go)
+  successfully ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
   successfully brew update
-
-echo "Putting Homebrew location earlier in PATH ..."
-  successfully echo "
-# recommended by brew doctor
-export PATH='/usr/local/bin:$PATH'" >> ~/.zshenv
-  successfully source ~/.zshenv
 
 echo "Installing GNU Compiler Collection and dependencies ..."
   successfully brew tap homebrew/dupes
@@ -62,8 +75,8 @@ echo "Installing watch, used to execute a program periodically and show the outp
 
 echo "Installing rbenv for changing Ruby versions ..."
   successfully brew install rbenv
-  successfully echo 'eval "$(rbenv init -)"' >> ~/.zlogin
-  successfully source ~/.zlogin
+  successfully echo 'eval "$(rbenv init -)"' >> ~/.zshrc
+  successfully source ~/.zshrc
 
 echo "Installing rbenv-gem-rehash so the shell automatically picks up binaries after installing gems with binaries..."
   successfully brew install rbenv-gem-rehash
@@ -72,8 +85,8 @@ echo "Installing ruby-build for installing Rubies ..."
   successfully brew install ruby-build
 
 echo "Installing Ruby 1.9.3-p392 ..."
-  CC=gcc-4.2 successfully rbenv install 1.9.3-p392
-
+  successfully rbenv install 1.9.3-p392
+  
 echo "Setting Ruby 1.9.3-p392 as global default Ruby ..."
   successfully rbenv global 1.9.3-p392
   successfully rbenv shell 1.9.3-p392
@@ -82,16 +95,21 @@ echo "Update to latest Rubygems version ..."
   successfully gem update --system
 
 echo "Installing critical Ruby gems for Rails development ..."
-  successfully gem install bundler foreman pg rails thin --no-document
+  successfully gem install bundler foreman rails thin pry --no-document
 
-echo "Installing GitHub CLI client ..."
-  successfully gem install hub --no-document
+echo "Install Python (Framework), pip, virtualenv, and virtualenvwrapper ..."
+  successfully brew install python --framework
+  successfully easy_install pip
+  successfully pip install virtualenv
+  successfully pip install virtualenvwrapper
+  successfully mkdir $HOME/.virtualenvs
+  successfully echo 'export PATH="/usr/local/share/python:$PATH"' >> ~/.zshrc
+  successfully echo 'export WORKON_HOME=$HOME/.virtualenvs' >> ~/.zshrc
+  successfully echo 'source /usr/local/share/python/virtualenvwrapper.sh' >> ~/.zshrc
 
-echo "Installing Heroku CLI client ..."
-  successfully brew install heroku-toolbelt
-
-echo "Installing the heroku-config plugin for pulling config variables locally to be used as ENV variables ..."
-  successfully heroku plugins:install git://github.com/ddollar/heroku-config.git
+echo "Install Node and npm ..."
+  successfully brew install node
+  successfully curl https://npmjs.org/install.sh | sh
 
 echo "Your shell will now restart in order for changes to apply."
   exec $SHELL -l
