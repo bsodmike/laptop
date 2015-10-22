@@ -35,12 +35,14 @@ echo "Fixing permissions ..."
   successfully sudo chown -R `whoami` /usr/local
 
 echo "Installing Homebrew, a good OS X package manager ..."
-successfully ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  successfully ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   successfully brew update
 
 echo "Installing GNU Compiler Collection and dependencies ..."
   successfully brew tap homebrew/dupes
+  successfully brew tap homebrew/versions
   successfully brew install autoconf automake apple-gcc42
+  successfully xcode-select --install
 
 echo "Installing system libraries recommended for Ruby ..."
   successfully brew install gdbm libffi libksba libyaml
@@ -48,6 +50,13 @@ echo "Installing system libraries recommended for Ruby ..."
 echo "Installing Postgres, a good open source relational database ..."
   successfully brew install postgres --no-python
   successfully initdb /usr/local/var/postgres -E utf8
+  successfully ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents
+  successfully launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
+
+echo "Installing MySQL"
+  successfully brew install mysql
+  successfully ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
+  successfully launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
 
 echo "Installing Redis, a good key-value database ..."
   successfully brew install redis
@@ -91,12 +100,12 @@ echo "Installing Ruby 1.8.7-p375 ..."
 echo "Installing Ruby 1.9.3-p551 ..."
   successfully rbenv install 1.9.3-p551
 
-echo "Installing Ruby 2.2.0 ..."
-  successfully rbenv install 2.2.0
+echo "Installing Ruby 2.2.3 ..."
+  successfully rbenv install 2.2.3
 
-echo "Setting Ruby 2.2.0 as global default Ruby ..."
-  successfully rbenv global 2.2.0
-  successfully rbenv shell 2.2.0
+echo "Setting Ruby 2.2.3 as global default Ruby ..."
+  successfully rbenv global 2.2.3
+  successfully rbenv shell 2.2.3
   successfully rbenv rehash
 
 echo "Update to latest Rubygems version ..."
@@ -115,7 +124,32 @@ echo "Install Python (Framework), pip, virtualenv, and virtualenvwrapper ..."
   successfully echo 'export WORKON_HOME=$HOME/.virtualenvs' >> ~/.zshrc
   successfully echo 'source /usr/local/share/python/virtualenvwrapper.sh' >> ~/.zshrc
 
-echo "Install Node and npm ..."
+echo  "Installing Powerline"
+  successfully pip install --user powerline-status
+
+echo "Installing MacVim, for Powerline"
+  successfully brew install macvim --env-std --override-system-vim
+
+echo "Installing PhantomJS 1.9.8"
+  successfully brew install phantomjs198
+
+echo "Installing Sphinx"
+  successfully brew install sphinx
+
+echo "Installing mycli and pgcli"
+  successfully brew install pgcli
+  successfully brew install mycli
+
+echo "Installing ffmepg"
+  successfully brew install ffmpeg
+
+echo "Installing ansbile"
+  successfully brew install ansible
+
+echo "Installing elixir"
+  successfully brew install elixir
+
+echo "Installing Node and npm ..."
   successfully brew install node
   successfully npm install -g npm@latest
 
